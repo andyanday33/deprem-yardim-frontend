@@ -94,10 +94,12 @@ export async function getServerSideProps(context: any) {
   //Filter out duplicates, put "enkaz (wreckage)" on top
   const reasonsPresent = new Set<string>();
   let filteredReasons = reasons.filter((reason) => {
-    const filterCondition = !reasonsPresent.has(reason);
+    const filterCondition =
+      !["enkaz", "kurtarma"].includes(reason) && !reasonsPresent.has(reason);
     reasonsPresent.add(reason);
     return filterCondition;
   });
+  filteredReasons = ["enkaz", ...filteredReasons];
 
   if (context.query.reasons === "" || !context.query.reasons) {
     searchParams.delete("reasons");

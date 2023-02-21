@@ -176,11 +176,23 @@ const MapControls = (props: IMapControlsProps) => {
   }, [poiFilter, prevReasons, queryReasons, router.query.reasons]);
 
   useEffect(() => {
+    /**
+     * Applies merges to given reasons array
+     * !!!Only applies enkaz+kurtarma merge at the moment, could be expanded in the future.
+     */
+    const applyMerges = (values: typeof selectedValues) => {
+      const reasons = values["reasons"];
+      if (reasons && reasons.includes("enkaz")) reasons.push("kurtarma");
+    };
+
+    const selectedValues = { ...poiFilter.selectedValues };
+    applyMerges(selectedValues);
+
     const query = new URLSearchParams(
       // @ts-ignore
-      { ...router.query, ...poiFilter.selectedValues }
+      { ...router.query, ...selectedValues }
     ).toString();
-    console.log("selected values", poiFilter.selectedValues);
+    console.log("selected values", selectedValues);
     // FIXME: this will caouse an infinite loop if setpoiFilters depedency is added
     router.push({ query }, { query }, { shallow: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
